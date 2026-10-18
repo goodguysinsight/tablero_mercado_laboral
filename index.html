@@ -1,0 +1,261 @@
+<!doctype html>
+<html lang="es">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Mercado Laboral Lima Metropolitana</title>
+<meta name="description" content="Tablero interactivo de la situación del mercado laboral en Lima Metropolitana, con datos de la Encuesta Permanente de Empleo Nacional (EPEN) del INEI.">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=IBM+Plex+Sans:wght@400;500;600&family=Source+Serif+4:opsz,wght@8..60,400;8..60,600&display=swap">
+<link rel="stylesheet" href="css/base.css">
+<link rel="stylesheet" href="css/tablero.css">
+</head>
+<body>
+<div id="dash-root">
+<div class="lm-page">
+  <header class="lm-head" id="inicio">
+    <p class="lm-kicker">INEI · Encuesta Permanente de Empleo Nacional (EPEN) · Lima Metropolitana y Callao</p>
+    <h1 class="lm-title">Situación del mercado laboral en Lima Metropolitana</h1>
+    <p class="lm-take" id="lm-take"><span class="dash-skeleton">—</span></p>
+  </header>
+
+  <div class="lm-bar">
+    <div class="lm-tabs" role="tablist" aria-label="Secciones">
+      <button class="lm-tab" role="tab" data-tab="panorama" id="tab-panorama">Panorama</button>
+      <button class="lm-tab" role="tab" data-tab="poblacion" id="tab-poblacion">Población y PEA</button>
+      <button class="lm-tab" role="tab" data-tab="ocupados" id="tab-ocupados">Ocupados</button>
+      <button class="lm-tab" role="tab" data-tab="niveles" id="tab-niveles">Niveles de empleo</button>
+      <button class="lm-tab" role="tab" data-tab="desempleo" id="tab-desempleo">Desempleo</button>
+      <button class="lm-tab" role="tab" data-tab="ingresos" id="tab-ingresos">Ingresos</button>
+      <button class="lm-tab" role="tab" data-tab="historicas" id="tab-historicas">Series 2001–2026</button>
+      <button class="lm-tab" role="tab" data-tab="definiciones" id="tab-definiciones">Definiciones</button>
+    </div>
+    <label class="lm-period">Trimestre móvil
+      <select class="lm-sel" id="lm-mes" aria-label="Trimestre móvil" data-source="epen_anexo"></select>
+    </label>
+  </div>
+
+  <!-- PANORAMA -->
+  <section class="lm-section" id="panorama" data-panel="panorama">
+    <div class="lm-explorer-bar" id="sexo-bar">
+      <span class="lm-note">Ver indicadores del panorama para</span>
+      <span class="lm-range" id="sexo-sel" role="group" aria-label="Sexo"></span>
+    </div>
+    <div class="lm-tiles" id="lm-tiles">
+      <div class="lm-tile" id="kpi-ocupados" data-t="ocupados" data-v="ocupados_var_pct" data-sg="sig_ocupados" data-good="up" data-unit="%"><p class="lm-tile-l">Población ocupada</p><div><span class="lm-tile-v dash-skeleton">—</span><span class="lm-tile-u">miles</span></div><span class="lm-tile-d"></span></div>
+      <div class="lm-tile" id="kpi-desempleo" data-t="tasa_desempleo" data-v="tasa_desempleo_var_pp" data-sg="sig_desempleo" data-good="down" data-unit=" pp" data-suf="%"><p class="lm-tile-l">Tasa de desempleo</p><div><span class="lm-tile-v dash-skeleton">—</span></div><span class="lm-tile-d"></span></div>
+      <div class="lm-tile" id="kpi-adecuado" data-t="tasa_adecuado" data-v="tasa_adecuado_var_pp" data-sg="sig_adecuado" data-good="up" data-unit=" pp" data-suf="%"><p class="lm-tile-l">Tasa de empleo adecuado</p><div><span class="lm-tile-v dash-skeleton">—</span></div><span class="lm-tile-d"></span></div>
+      <div class="lm-tile" id="kpi-subempleo" data-t="tasa_subempleo_ingresos" data-v="tasa_subempleo_ingresos_var_pp" data-sg="sig_subempleo_ingresos" data-good="down" data-unit=" pp" data-suf="%"><p class="lm-tile-l">Tasa de subempleo por ingresos</p><div><span class="lm-tile-v dash-skeleton">—</span></div><span class="lm-tile-d"></span></div>
+      <div class="lm-tile" id="kpi-ingreso" data-t="ingreso" data-v="ingreso_var_pct" data-sg="sig_ingreso" data-good="up" data-unit="%"><p class="lm-tile-l">Ingreso promedio mensual</p><div><span class="lm-tile-u" style="margin:0 4px 0 0">S/</span><span class="lm-tile-v dash-skeleton">—</span></div><span class="lm-tile-d"></span></div>
+      <div class="lm-tile" id="kpi-actividad" data-t="tasa_actividad" data-v="tasa_actividad_var_pp" data-good="up" data-unit=" pp" data-suf="%"><p class="lm-tile-l">Tasa de actividad (PEA / PET)</p><div><span class="lm-tile-v dash-skeleton">—</span></div><span class="lm-tile-d"></span></div>
+    </div>
+    <p class="lm-note" id="lm-tile-note">Variación respecto a similar trimestre móvil del año anterior. Tasas en puntos porcentuales (pp).</p>
+
+    <div class="lm-grid">
+      <article class="lm-card" id="card-condicion">
+        <p class="lm-eyebrow">Cuadro N° 01</p>
+        <h3 id="h-condicion">Población en edad de trabajar según condición de actividad</h3>
+        <p class="lm-note">Miles de personas y distribución porcentual de la PET (14 y más años).</p>
+        <div id="pet-stack"></div>
+        <p class="lm-foot">PET: Población en Edad de Trabajar. PEA: Población Económicamente Activa. No PEA: Población Económicamente No Activa. Fuente: INEI – EPEN.</p>
+      </article>
+      <article class="lm-card" id="card-cada100">
+        <p class="lm-eyebrow">Cuadro N° 11</p>
+        <h3 id="h-cada100">De cada 100 personas de la PEA</h3>
+        <p class="lm-note" id="n-cada100">Tasas de niveles de empleo, redondeadas a personas enteras.</p>
+        <div id="waffle-pan"></div>
+        <p class="lm-foot">Fuente: INEI – EPEN.</p>
+      </article>
+    </div>
+    <div class="lm-grid">
+      <article class="lm-card" id="card-g01">
+        <p class="lm-eyebrow">Gráfico N° 01</p>
+        <h3 id="h-g01">Evolución de la población ocupada, 2022–2026</h3>
+        <p class="lm-note">Miles de personas por trimestre móvil. En el trimestre del informe se muestra el intervalo de confianza (L.S. / L.I.).</p>
+        <div class="lm-chart" id="ch-g01" data-source="series_lima epen_destacados"></div>
+        <p class="lm-foot">Fuente: INEI – EPEN.</p>
+      </article>
+      <article class="lm-card" id="card-g13">
+        <p class="lm-eyebrow">Gráfico N° 13</p>
+        <h3 id="h-g13">Evolución de la tasa de desempleo, 2022–2026</h3>
+        <p class="lm-note">Porcentaje de la PEA por trimestre móvil, con intervalo de confianza en el trimestre del informe.</p>
+        <div class="lm-chart" id="ch-g13" data-source="series_lima epen_destacados"></div>
+        <p class="lm-foot">Fuente: INEI – EPEN.</p>
+      </article>
+    </div>
+  </section>
+
+  <!-- POBLACION -->
+  <section class="lm-section" id="poblacion" data-panel="poblacion" hidden>
+    <h2 class="lm-h2"><small>Secciones 1 y 2 del informe</small>Población en edad de trabajar y población económicamente activa</h2>
+    <p class="lm-lede">La PET (14 y más años) se divide en PEA, que reúne a quienes están ocupados o buscan empleo, y No PEA. La tasa de actividad mide qué parte de la PET participa en el mercado laboral.</p>
+    <article class="lm-card" id="card-actividad">
+      <h3>Tasa de actividad por sexo, 2001–2026</h3>
+      <p class="lm-note">PEA como porcentaje de la PET, por trimestre móvil. Las líneas verticales marcan cambios del marco muestral.</p>
+      <div class="lm-legend" id="lg-actividad"></div>
+      <div class="lm-chart lm-tall" id="ch-actividad" data-source="series_lima"></div>
+      <p class="lm-foot">Hasta 2016 la EPE usó el marco del Censo 2007; en 2017 se renovó con el Empadronamiento 2013 (SISFOH), en forma completa desde enero de 2018. Desde Ago-Set-Oct 2022 los datos provienen de la EPEN (Lima Metropolitana y Callao). Fuente: INEI.</p>
+    </article>
+    <div data-explorer="poblacion"></div>
+  </section>
+
+  <!-- OCUPADOS -->
+  <section class="lm-section" id="ocupados" data-panel="ocupados" hidden>
+    <h2 class="lm-h2"><small>Sección 3 del informe</small>Población económicamente activa ocupada</h2>
+    <p class="lm-lede">Personas que en la semana de referencia realizaron alguna actividad económica. Se desagregan por sexo, edad, educación, rama, tamaño de empresa, categoría de ocupación, seguro de salud y horas trabajadas.</p>
+    <article class="lm-card" id="card-g03">
+      <p class="lm-eyebrow">Gráfico N° 03</p>
+      <h3>Variación porcentual de la población ocupada por trimestre móvil, 2022–2026</h3>
+      <p class="lm-note">Respecto a similar trimestre móvil del año anterior.</p>
+      <div class="lm-chart" id="ch-g03" data-source="series_var"></div>
+      <p class="lm-foot">Fuente: INEI – EPEN.</p>
+    </article>
+    <div data-explorer="ocupados"></div>
+  </section>
+
+  <!-- NIVELES -->
+  <section class="lm-section" id="niveles" data-panel="niveles" hidden>
+    <h2 class="lm-h2"><small>Secciones 4 a 6 del informe</small>Niveles de empleo: empleo adecuado y subempleo</h2>
+    <p class="lm-lede">Los ocupados se clasifican en adecuadamente empleados y subempleados. El subempleo es visible cuando se trabaja menos de 35 horas deseando trabajar más, e invisible cuando se trabaja 35 horas o más con ingresos menores a la canasta mínima de consumo.</p>
+    <div class="lm-grid">
+      <article class="lm-card" id="card-cada100b">
+        <p class="lm-eyebrow">Cuadro N° 11</p>
+        <h3>De cada 100 personas de la PEA</h3>
+        <div id="waffle-niv"></div>
+        <p class="lm-foot">Fuente: INEI – EPEN.</p>
+      </article>
+      <article class="lm-card" id="card-tasas-niv">
+        <p class="lm-eyebrow">Anexo, Cuadro N° 06</p>
+        <h3>Tasas de niveles de empleo, 2021–2026</h3>
+        <p class="lm-note">Porcentaje de la PEA por trimestre móvil.</p>
+        <div class="lm-legend" id="lg-niv"></div>
+        <div class="lm-chart" id="ch-niv" data-source="epen_anexo"></div>
+      </article>
+    </div>
+    <div data-explorer="niveles"></div>
+  </section>
+
+  <!-- DESEMPLEO -->
+  <section class="lm-section" id="desempleo" data-panel="desempleo" hidden>
+    <h2 class="lm-h2"><small>Sección 7 del informe</small>Tasa de desempleo</h2>
+    <p class="lm-lede">Población desocupada (que busca activamente un empleo) como porcentaje de la PEA. Se distingue entre aspirantes, que buscan su primer empleo, y cesantes, con experiencia laboral previa.</p>
+    <article class="lm-card" id="card-td-grupos">
+      <h3>Tasa de desempleo por sexo y grupo de edad, 2001–2026</h3>
+      <p class="lm-note">Porcentaje de la PEA de cada grupo, por trimestre móvil.</p>
+      <div class="lm-explorer-bar"><span class="lm-range" id="rg-td"></span></div>
+      <div class="lm-legend" id="lg-td"></div>
+      <div class="lm-chart lm-tall" id="ch-td" data-source="series_lima"></div>
+      <p class="lm-foot">Cambios de marco muestral en 2017–2018 y paso a la EPEN desde Ago-Set-Oct 2022. Fuente: INEI.</p>
+    </article>
+    <div data-explorer="desempleo"></div>
+  </section>
+
+  <!-- INGRESOS -->
+  <section class="lm-section" id="ingresos" data-panel="ingresos" hidden>
+    <h2 class="lm-h2"><small>Sección 8 del informe</small>Ingreso proveniente del trabajo y masa salarial</h2>
+    <p class="lm-lede">Ingreso promedio mensual de la actividad principal (sueldos, salarios y ganancias monetarias y en especie) y masa salarial, que es el total de remuneraciones de dependientes e independientes en el trimestre móvil.</p>
+    <div class="lm-grid">
+      <article class="lm-card" id="card-brecha">
+        <p class="lm-eyebrow">Cuadro N° 25 · Anexo N° 48</p>
+        <h3>Ingreso promedio mensual por sexo, 2021–2026</h3>
+        <p class="lm-note" id="brecha-txt"><span class="dash-skeleton">—</span></p>
+        <div class="lm-legend" id="lg-ing"></div>
+        <div class="lm-chart" id="ch-ing" data-source="epen_anexo"></div>
+        <p class="lm-foot">Soles corrientes. Fuente: INEI – EPEN.</p>
+      </article>
+      <article class="lm-card" id="card-masa">
+        <p class="lm-eyebrow">Gráfico N° 15</p>
+        <h3>Masa salarial por categoría laboral, 2012–2026</h3>
+        <p class="lm-note" id="masa-txt"><span>En Jul-Ago-Set 2026 la masa salarial varió </span><b data-source="epen_destacados" data-field="valor" data-where="indicador=masa_salarial_var" class="dash-skeleton">—</b><span> respecto a similar trimestre de 2025 (informe técnico). La serie del Excel llega a Jun-Jul-Ago 2026.</span></p>
+        <div class="lm-legend" id="lg-masa"></div>
+        <div class="lm-chart" id="ch-masa" data-source="series_lima"></div>
+        <p class="lm-foot">Millones de soles por trimestre móvil (ponderado). Fuente: INEI – EPE / EPEN.</p>
+      </article>
+    </div>
+    <article class="lm-card" id="card-conos">
+      <p class="lm-eyebrow">Anexo, Cuadros N° 47, 52 y 55</p>
+      <h3>Comparativo por conos de Lima Metropolitana y Callao</h3>
+      <p class="lm-note" id="n-conos">—</p>
+      <div class="lm-two">
+        <div><p class="lm-sub-h">Ingreso promedio mensual (soles)</p><div id="bars-conos" data-source="conos"></div></div>
+        <div><p class="lm-sub-h">Evolución del ingreso promedio mensual, 2021–2026</p><div class="lm-legend" id="lg-conos"></div><div class="lm-chart" id="ch-conos" data-source="epen_anexo"></div></div>
+      </div>
+      <div class="lm-tablewrap" id="tb-conos"></div>
+      <p class="lm-foot">Cono Norte: Ancón, Carabayllo, Comas, Independencia, Los Olivos, Puente Piedra, San Martín de Porres y Santa Rosa. Cono Este: Ate, Santa Anita, Chaclacayo, Lurigancho, La Molina, Cieneguilla, San Luis y San Juan de Lurigancho. Cono Centro: Lima Cercado, Breña, Jesús María, Lince, Barranco, San Isidro, San Miguel, Magdalena del Mar, Pueblo Libre, San Borja, Miraflores, La Victoria, Rímac, Surquillo y Santiago de Surco. Cono Sur: Lurín, Pachacámac, Pucusana, Punta Hermosa, Punta Negra, San Bartolo, San Juan de Miraflores, Santa María del Mar, Villa El Salvador, Villa María del Triunfo y Chorrillos. Callao: Callao, Bellavista, Carmen de La Legua, La Perla, Ventanilla, La Punta y Mi Perú. Los ingresos totales son de la ocupación principal en año móvil. Fuente: INEI – EPEN.</p>
+    </article>
+    <div data-explorer="ingresos"></div>
+  </section>
+
+  <!-- HISTORICAS -->
+  <section class="lm-section" id="historicas" data-panel="historicas" hidden>
+    <h2 class="lm-h2"><small>Series de empleo del INEI</small>Series históricas por trimestre móvil, 2001–2026</h2>
+    <p class="lm-lede">Series del archivo de empleo de Lima Metropolitana (EPE hasta 2022, EPEN desde Ago-Set-Oct 2022), completadas con el trimestre Jul-Ago-Set 2026 del informe técnico.</p>
+    <article class="lm-card" id="card-hist">
+      <div class="lm-explorer-bar">
+        <label for="lm-hist">Indicador</label>
+        <select class="lm-sel" id="lm-hist" aria-label="Indicador"></select>
+        <span class="lm-range" id="rg-hist"></span>
+      </div>
+      <h3 id="hist-title">—</h3>
+      <p class="lm-note" id="hist-note">—</p>
+      <div class="lm-legend" id="lg-hist"></div>
+      <div class="lm-chart lm-tall" id="ch-hist" data-source="series_lima"></div>
+      <p class="lm-foot">Líneas verticales: renovación del marco muestral (ene-2017), marco renovado por completo (ene-2018) e inicio de la EPEN (Ago-Set-Oct 2022). Hasta 2016 el marco provino del Censo 2007. Para el subempleo el período base es la canasta de setiembre de 2001. Fuente: INEI.</p>
+    </article>
+  </section>
+
+  <!-- DEFINICIONES -->
+  <section class="lm-section" id="definiciones" data-panel="definiciones" hidden>
+    <h2 class="lm-h2"><small>Notas metodológicas</small>Definiciones y lectura de los cuadros</h2>
+    <div class="lm-defs">
+      <article class="lm-card"><h3>Condición de actividad</h3><dl>
+        <dt>Población en Edad de Trabajar (PET)</dt><dd>Población de 14 y más años de edad que, al encontrarse en edad productiva, es potencialmente demandante de empleo. La integran la PEA y la No PEA.</dd>
+        <dt>Población Económicamente Activa (PEA)</dt><dd>También llamada fuerza de trabajo. Personas que están ocupadas y las que buscan estarlo.</dd>
+        <dt>PEA ocupada</dt><dd>Personas que en el período de referencia tienen un empleo.</dd>
+        <dt>PEA desocupada</dt><dd>PEA que busca activamente un empleo. Se divide en aspirantes (sin experiencia laboral) y cesantes (con experiencia laboral).</dd>
+        <dt>Población Económicamente No Activa (No PEA)</dt><dd>Personas en edad de trabajar que no participan en el mercado laboral: no trabajan ni buscan trabajo.</dd>
+      </dl></article>
+      <article class="lm-card"><h3>Tasas</h3><dl>
+        <dt>Tasa de actividad</dt><dd>PEA / PET × 100.</dd>
+        <dt>Tasa de ocupación</dt><dd>PEA ocupada / PEA × 100.</dd>
+        <dt>Tasa de desempleo</dt><dd>PEA desocupada / PEA × 100.</dd>
+        <dt>Tasa neta de participación (anexo, cuadros 17 y 18)</dt><dd>Según sus cifras, equivale a la población ocupada como porcentaje de la PET.</dd>
+        <dt>Tasas de niveles de empleo</dt><dd>Adecuadamente empleados, subempleo visible, subempleo invisible y desempleo, expresados como porcentaje de la PEA. Suman 100.</dd>
+      </dl></article>
+      <article class="lm-card"><h3>Niveles de empleo</h3><dl>
+        <dt>Subempleo por insuficiencia de horas (visible)</dt><dd>PEA ocupada que trabaja menos de 35 horas semanales y desea y está disponible para trabajar más horas.</dd>
+        <dt>Subempleo por ingresos (invisible)</dt><dd>PEA con empleo (asalariado o independiente) que normalmente trabaja 35 horas o más a la semana, pero cuyos ingresos son menores al valor de la canasta mínima de consumo familiar por perceptor de ingreso. Base: canasta de setiembre de 2001.</dd>
+        <dt>Adecuadamente empleados</dt><dd>Ocupados que no están subempleados: trabajan 35 horas o más con ingresos iguales o superiores a la canasta mínima, o menos de 35 horas sin desear trabajar más.</dd>
+      </dl></article>
+      <article class="lm-card"><h3>Ingresos</h3><dl>
+        <dt>Ingreso promedio mensual</dt><dd>Sueldos, salarios y ganancias monetarias y en especie de la actividad principal que percibe la población que efectivamente trabajó en la semana de referencia.</dd>
+        <dt>Ingreso promedio por hora</dt><dd>Desde Feb-Mar-Abr 2020 se calcula con las horas normalmente trabajadas.</dd>
+        <dt>Masa salarial</dt><dd>Total de remuneraciones acumuladas de los trabajadores dependientes e independientes en su actividad principal y/o secundaria durante un período de 3 meses (trimestre móvil).</dd>
+        <dt>Año móvil</dt><dd>Los ingresos totales de la ocupación principal (anexo, cuadros 45 a 47) se presentan en períodos de doce meses que avanzan un mes a la vez.</dd>
+      </dl></article>
+      <article class="lm-card"><h3>Clasificaciones</h3><dl>
+        <dt>Rama de actividad</dt><dd>Servicios incluye restaurantes y hoteles, transportes y comunicaciones, sector público, salud y educación, entre otros. Otros comprende actividades extractivas (agricultura, pesca y minería). Los totales incluyen otras actividades.</dd>
+        <dt>Categoría de ocupación</dt><dd>Independientes: empleador o patrono y trabajador independiente. Dependientes: empleado, obrero y trabajador del hogar.</dd>
+        <dt>Nivel educativo</dt><dd>Primaria incluye inicial y sin nivel.</dd>
+        <dt>Conos</dt><dd>Norte: Ancón, Carabayllo, Comas, Independencia, Los Olivos, Puente Piedra, San Martín de Porres y Santa Rosa. Este: Ate, Santa Anita, Chaclacayo, Lurigancho, La Molina, Cieneguilla, San Luis y San Juan de Lurigancho. Centro: Lima Cercado, Breña, Jesús María, Lince, Barranco, San Isidro, San Miguel, Magdalena del Mar, Pueblo Libre, San Borja, Miraflores, La Victoria, Rímac, Surquillo y Santiago de Surco. Sur: Lurín, Pachacámac, Pucusana, Punta Hermosa, Punta Negra, San Bartolo, San Juan de Miraflores, Santa María del Mar, Villa El Salvador, Villa María del Triunfo y Chorrillos. Callao: Callao, Bellavista, Carmen de La Legua, La Perla, Ventanilla, La Punta y Mi Perú.</dd>
+      </dl></article>
+      <article class="lm-card"><h3>Cómo leer los cuadros</h3><dl>
+        <dt>Trimestre móvil</dt><dd>Cada dato resume tres meses consecutivos y avanza un mes a la vez (por ejemplo, Jul-Ago-Set 2026). La comparación válida es con similar trimestre móvil del año anterior.</dd>
+        <dt>Variación</dt><dd>Para niveles, en miles y en porcentaje; para tasas, en puntos porcentuales (pp); para promedios de horas, en horas.</dd>
+        <dt>+, ++, +++</dt><dd>Pruebas de diferencia del trimestre del informe respecto a similar trimestre del año anterior: significativa al 10%, 5% y 1%, respectivamente. Solo se publican para Jul-Ago-Set 2026.</dd>
+        <dt>a/ (en cursiva)</dt><dd>Resultado referencial: el número de casos en la muestra no es suficiente y el coeficiente de variación es mayor al 15%.</dd>
+        <dt>Muestra</dt><dd id="def-muestra"><span class="dash-skeleton">—</span></dd>
+      </dl></article>
+    </div>
+  </section>
+</div>
+<footer class="lm-site-foot">
+  Fuente: Instituto Nacional de Estadística e Informática (INEI) – Encuesta Permanente de Empleo Nacional (EPEN). Informe Técnico N° 10, octubre 2026, “Situación del Mercado Laboral en Lima Metropolitana”, trimestre móvil julio-agosto-setiembre 2026, y series de empleo de Lima Metropolitana 2001–2026. Elaboración propia.
+</footer>
+</div>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/d3/7.9.0/d3.min.js"></script>
+<script src="js/dash.js"></script>
+<script src="js/app.js"></script>
+</body>
+</html>
