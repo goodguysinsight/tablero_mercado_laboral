@@ -85,4 +85,4 @@ python -m http.server 8000
 
 ## Fuente
 
-Instituto Nacional de Estadística e Informática (INEI) – Encuesta Permanente de Empleo Nacional (EPEN). *Situación del Mercado Laboral en Lima Metropolitana*, Informe Técnico N° 10, octubre 2026; y series de empleo de Lima Metropolitana 2001–2026. Elaboración propia.
+Instituto Nacional de Estadística e Informática (INEI) – Encuesta Permanente de Empleo Nacional (EPEN). *Situación del Mercado Laboral en Lima Metropolitana*, Informe Técnico N° 10, octubre 2026; y series de empleo de Lima Metropolitana 2001–2026. Elaboración: Good Guys Insight.
